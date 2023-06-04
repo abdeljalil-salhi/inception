@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  wordpress:
+    build: requirements/wordpress/
+    container_name: wordpress
+    ports:
+      - 9000:9000
+    volumes:
+      - "/home/absalhi/Desktop/volumes/website:/var/www/html"
+    depends_on:
+      - mariadb
+    networks:
+      - frontend
+      - backend
+    restart: always
+    env_file:
+      - .env
+  mariadb:
+    container_name: mariadb
+    image: mariadb:1337
+    restart: always
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - "/home/absalhi/Desktop/volumes/mariadb:/var/lib/mysql"
+    ports:
+      - 3306:3306
+    networks:
+      - backend
+
+volumes:
+  mariadb:
+    name: mariadb
+    driver: local
+    driver_opts:
+      o: bind
+      type: volume
+      device: ./volumes/mariadb
+
+
+networks:
+  backend:
+  frontend:
