@@ -1,19 +1,19 @@
-version: '3'
+version: '3.7'
 
 services:
-  wordpress:
-    build: requirements/wordpress/
-    container_name: wordpress
-    ports:
-      - 9000:9000
-    volumes:
-      - "/home/absalhi/Desktop/volumes/website:/var/www/html"
-    depends_on:
-      - mariadb
-    networks:
-      - frontend
-      - backend
+  nginx:
+    container_name: nginx
+    image: nginx:1337
     restart: always
+    build:
+      context: ./requirements/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - network
+    ports:
+      - 443:443
     env_file:
       - .env
   mariadb:
@@ -23,25 +23,45 @@ services:
     build:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
+    volumes:
+      - mariadb:/var/lib/mysql
+    networks:
+      - network
     env_file:
       - .env
+  wordpress:
+    container_name: wordpress
+    image: wordpress:1337
+    restart: always
+    depends_on:
+      - mariadb
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
     volumes:
-      - "/home/absalhi/Desktop/volumes/mariadb:/var/lib/mysql"
-    ports:
-      - 3306:3306
+      - wordpress:/var/www/html
     networks:
-      - backend
+      - network
+    env_file:
+      - .env
 
 volumes:
+  wordpress:
+    name: wordpress
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/absalhi/volumes/wordpress
   mariadb:
     name: mariadb
     driver: local
     driver_opts:
       o: bind
-      type: volume
-      device: ./volumes/mariadb
-
+      type: none
+      device: /home/absalhi/volumes/mariadb
 
 networks:
-  backend:
-  frontend:
+  network:
+    name: network
+    driver: bridge

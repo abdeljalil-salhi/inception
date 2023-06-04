@@ -5,7 +5,7 @@ RUN apk update && apk upgrade
 RUN apk add --no-cache mariadb mariadb-client
 
 # Get the config in place
-COPY ./tools/setup.sh /tmp/setup.sh
+COPY ./tools/setup.sh /tmp/setup_mariadb.sh
 
 # Run the setup script
-ENTRYPOINT ["sh", "/tmp/setup.sh"]
+ENTRYPOINT ["sh", "/tmp/setup_mariadb.sh"]
