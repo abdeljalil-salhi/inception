@@ -39,12 +39,12 @@ services:
 
 volumes:
   wordpress:
-    # name: wordpress
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: ${BASEDIR}/wordpress
+    name: wordpress
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${BASEDIR}/wordpress
 
 networks:
   mynetwork:
