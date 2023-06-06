@@ -1,31 +1,67 @@
-all		:	re
+NAME	=	inception
+AUTHOR	=	absalhi
 
-up		:	chown
-			@mkdir -p /home/absalhi/volumes/wordpress/ /home/absalhi/volumes/mariadb/
-			@docker-compose -f srcs/docker-compose.yml up --build -d
+GREEN	=	'\033[32m'
+RED		=	'\033[31m'
+NC		=	'\033[0m'
 
-down	:
-			@docker-compose -f srcs/docker-compose.yml down
+include srcs/.env
+export $$(shell grep -v '^#' srcs/.env | xargs)
 
-clean	:	down
-			@rm -rf /home/absalhi/volumes/
-			@docker-compose -f srcs/docker-compose.yml rm -v
+all		:	$(NAME)
+
+$(NAME)	:	chown
+			@echo $(GREEN)"Building containers..."$(NC)
+			@if [ ! -d "$(BASEDIR)/" ]; then \
+				echo $(RED)"No volumes found, creating..."$(NC); \
+				make mkvol; \
+				echo $(GREEN)"Volumes created."$(NC); \
+			fi
+			@if [ ! -f /tmp/.setup ]; then \
+				echo $(RED)"Hosts not set, setting up..."$(NC); \
+				chmod 777 /etc/hosts; \
+				echo "127.0.0.1 $(AUTHOR).42.fr" >> /etc/hosts; \
+				touch /tmp/.setup; \
+				echo $(GREEN)"Hosts set."$(NC); \
+			fi
+			@docker-compose -f srcs/docker-compose.yml up --build -d --force-recreate
+			@echo $(GREEN)"Containers built."$(NC)
+
+clean	:
+			@echo $(RED)"Bringing containers down and removing images..."$(NC)
+			@docker-compose -f srcs/docker-compose.yml down -v --rmi all --remove-orphans
+			@echo $(GREEN)"Containers down."$(NC)
 
 fclean	:	clean
-			@docker network prune -f
-			@docker system prune -f
+			@echo $(RED)"Removing volumes..."$(NC)
+			@rm -rf $(BASEDIR)/ /tmp/.setup
+			@docker volume prune --force
+			@echo $(GREEN)"Volumes removed."$(NC)
+			@echo $(RED)"Removing containers..."$(NC)
+			@docker system prune --volumes --all --force
+			@echo $(GREEN)"Containers removed."$(NC)
+			@echo $(RED)"Removing networks..."$(NC)
+			@docker network prune --force
+			@echo $(GREEN)"Networks removed."$(NC)
 
-re		:	fclean up
+re		:	fclean all
 
-clear_volumes	:
-			@docker volume rm mariadb wordpress
+restart	:
+			@echo $(GREEN)"Restarting containers..."$(NC)
+			@docker-compose -f srcs/docker-compose.yml restart
+			@echo $(GREEN)"Containers restarted."$(NC)
+
+mkvol	:
+			@mkdir -p $(BASEDIR)/wordpress $(BASEDIR)/mariadb
+
+logs	:
+			@docker-compose -f srcs/docker-compose.yml logs -f
+
+ps		:
+			@docker-compose -f srcs/docker-compose.yml ps
 
 chown	:
-			@chown -R absalhi:absalhi ./*
-			@chown -R absalhi:absalhi ./.*
+			@chown -R $(AUTHOR):$(AUTHOR) ./*
+			@chown -R $(AUTHOR):$(AUTHOR) ./.*
 
-nginx	:
-			@docker build -t nginx ./srcs/requirments/nginx/
-			@docker run -it --rm -p 80:80 -p 443:443 nginx -e ALPINE_VERSION=3.18.0
-
-.PHONY	:	all up down clean fclean clear_volumes re chown nginx
+.PHONY	:	all clean fclean re restart mkvol logs ps chown
