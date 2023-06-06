@@ -12,16 +12,15 @@ all		:	$(NAME)
 
 $(NAME)	:	chown
 			@echo $(GREEN)"Building containers..."$(NC)
-			@if [ ! -d "$(BASEDIR)/" ]; then \
+			@if [ ! -d $(BASEDIR)/ ]; then \
 				echo $(RED)"No volumes found, creating..."$(NC); \
 				make mkvol; \
 				echo $(GREEN)"Volumes created."$(NC); \
 			fi
-			@if [ ! -f /tmp/.setup ]; then \
+			@if [ ! -f $(BASEDIR)/.setup ]; then \
 				echo $(RED)"Hosts not set, setting up..."$(NC); \
-				chmod 777 /etc/hosts; \
 				echo "127.0.0.1 $(AUTHOR).42.fr" >> /etc/hosts; \
-				touch /tmp/.setup; \
+				touch $(BASEDIR)/.setup; \
 				echo $(GREEN)"Hosts set."$(NC); \
 			fi
 			@docker-compose -f srcs/docker-compose.yml up --build -d --force-recreate
@@ -34,7 +33,7 @@ clean	:
 
 fclean	:	clean
 			@echo $(RED)"Removing volumes..."$(NC)
-			@rm -rf $(BASEDIR)/ /tmp/.setup
+			@rm -rf $(BASEDIR)/ $(BASEDIR)/.setup
 			@docker volume prune --force
 			@echo $(GREEN)"Volumes removed."$(NC)
 			@echo $(RED)"Removing containers..."$(NC)
@@ -52,7 +51,7 @@ restart	:
 			@echo $(GREEN)"Containers restarted."$(NC)
 
 mkvol	:
-			@mkdir -p $(BASEDIR)/wordpress $(BASEDIR)/mariadb
+			@mkdir -p $(BASEDIR)/wordpress
 
 logs	:
 			@docker-compose -f srcs/docker-compose.yml logs -f

@@ -11,37 +11,9 @@ services:
     volumes:
       - wordpress:/var/www/html
     networks:
-      - network
+      - mynetwork
     ports:
-      - 443:443
-    env_file:
-      - .env
-  mariadb:
-    container_name: mariadb
-    image: mariadb:1337
-    restart: always
-    build:
-      context: ./requirements/mariadb
-      dockerfile: Dockerfile
-    volumes:
-      - mariadb:/var/lib/mysql
-    networks:
-      - network
-    env_file:
-      - .env
-  wordpress:
-    container_name: wordpress
-    image: wordpress:1337
-    restart: always
-    depends_on:
-      - mariadb
-    build:
-      context: ./requirements/wordpress
-      dockerfile: Dockerfile
-    volumes:
-      - wordpress:/var/www/html
-    networks:
-      - network
+      - 80:80
     env_file:
       - .env
 
@@ -50,18 +22,11 @@ volumes:
     name: wordpress
     driver: local
     driver_opts:
-      o: bind
       type: none
-      device: /home/absalhi/volumes/wordpress
-  mariadb:
-    name: mariadb
-    driver: local
-    driver_opts:
       o: bind
-      type: none
-      device: /home/absalhi/volumes/mariadb
+      device: ${BASEDIR}/wordpress
 
 networks:
-  network:
-    name: network
+  mynetwork:
+    name: mynetwork
     driver: bridge
