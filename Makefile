@@ -33,7 +33,7 @@ clean	:
 
 fclean	:	clean
 			@echo $(RED)"Removing volumes..."$(NC)
-			@rm -rf $(BASEDIR)/ $(BASEDIR)/.setup
+			@rm -rf $(BASEDIR)/
 			@docker volume prune --force
 			@echo $(GREEN)"Volumes removed."$(NC)
 			@echo $(RED)"Removing containers..."$(NC)
@@ -51,7 +51,7 @@ restart	:
 			@echo $(GREEN)"Containers restarted."$(NC)
 
 mkvol	:
-			@mkdir -p $(BASEDIR)/wordpress
+			@mkdir -p $(BASEDIR)/wordpress $(BASEDIR)/mariadb
 			@chown -R $(AUTHOR):$(AUTHOR) $(BASEDIR)/*
 			@chown -R $(AUTHOR):$(AUTHOR) $(BASEDIR)/.*
 

@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   nginx:
@@ -25,6 +25,8 @@ services:
     container_name: wordpress
     image: wordpress:1337
     restart: always
+    depends_on:
+      - mariadb
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
@@ -32,6 +34,24 @@ services:
         - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
       - wordpress:/var/www/wordpress
+    networks:
+      - mynetwork
+    env_file:
+      - .env
+  mariadb:
+    container_name: mariadb
+    image: mariadb:1337
+    restart: always
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+      args:
+        - MARIADB_DB=${MARIADB_DB}
+        - MARIADB_USER=${MARIADB_USER}
+        - MARIADB_PWD=${MARIADB_PWD}
+        - MARIADB_ROOT_PWD=${MARIADB_ROOT_PWD}
+    volumes:
+      - mariadb:/var/lib/mysql
     networks:
       - mynetwork
     env_file:
@@ -45,6 +65,13 @@ volumes:
       type: none
       o: bind
       device: ${BASEDIR}/wordpress
+  mariadb:
+    name: mariadb
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${BASEDIR}/mariadb
 
 networks:
   mynetwork:

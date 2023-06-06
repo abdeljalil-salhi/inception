@@ -10,7 +10,7 @@ RUN		apt-get update \
 		&& mkdir -p /var/www/wordpress /run/php \
 		&& curl -s -o /usr/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
 		&& chmod +x /usr/bin/wp \
-		&& wp core download --version=6.1.3 --path=/var/www/wordpress --allow-root
+		&& wp core download --version=6.2.2 --path=/var/www/wordpress --allow-root
 
 COPY	tools/setup.sh /tmp/setup.sh
 
