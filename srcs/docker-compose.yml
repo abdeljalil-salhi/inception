@@ -12,22 +12,37 @@ services:
         - LOGIN=${LOGIN}
         - DOMAIN_NAME=${DOMAIN_NAME}
     volumes:
-      - wordpress:/var/www/html
+      - wordpress:/var/www/wordpress
     networks:
       - mynetwork
     ports:
       - 443:443
     env_file:
       - .env
+  wordpress:
+    container_name: wordpress
+    image: wordpress:1337
+    restart: always
+    build:
+      context: ./requirements/wordpress
+      dockerfile: Dockerfile
+      args:
+        - DOMAIN_NAME=${DOMAIN_NAME}
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - mynetwork
+    env_file:
+      - .env
 
 volumes:
   wordpress:
-    name: wordpress
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${BASEDIR}/wordpress
+    # name: wordpress
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: ${BASEDIR}/wordpress
 
 networks:
   mynetwork:

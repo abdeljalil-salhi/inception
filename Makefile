@@ -23,7 +23,7 @@ $(NAME)	:	chown
 				touch $(BASEDIR)/.setup; \
 				echo $(GREEN)"Hosts set."$(NC); \
 			fi
-			@docker-compose -f srcs/docker-compose.yml up --build -d --force-recreate
+			@docker-compose -f srcs/docker-compose.yml up --build -d
 			@echo $(GREEN)"Containers built."$(NC)
 
 clean	:
@@ -52,6 +52,8 @@ restart	:
 
 mkvol	:
 			@mkdir -p $(BASEDIR)/wordpress
+			@chown -R $(AUTHOR):$(AUTHOR) $(BASEDIR)/*
+			@chown -R $(AUTHOR):$(AUTHOR) $(BASEDIR)/.*
 
 logs	:
 			@docker-compose -f srcs/docker-compose.yml logs -f
