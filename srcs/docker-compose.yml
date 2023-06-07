@@ -27,6 +27,7 @@ services:
     restart: always
     depends_on:
       - mariadb
+      - redis
     build:
       context: ./requirements/wordpress
       dockerfile: Dockerfile
@@ -52,6 +53,17 @@ services:
         - MARIADB_ROOT_PWD=${MARIADB_ROOT_PWD}
     volumes:
       - mariadb:/var/lib/mysql
+    networks:
+      - mynetwork
+    env_file:
+      - .env
+  redis:
+    container_name: redis
+    image: redis:1337
+    restart: always
+    build:
+      context: ./requirements/bonus/redis
+      dockerfile: Dockerfile
     networks:
       - mynetwork
     env_file:
