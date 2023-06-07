@@ -14,13 +14,10 @@ RUN		apt-get update \
 		-keyout "/etc/nginx/tls/${DOMAIN_NAME}.key" -out "/etc/nginx/tls/${DOMAIN_NAME}.crt" \
 		-subj "/C=MA/ST=Rehamna/L=Benguerir/O=1337 Future Is Loading/OU=${LOGIN}/CN=${DOMAIN_NAME}"
 
-COPY	tools/nginx.conf /tmp/nginx.conf.template
+COPY	conf/nginx.conf /tmp/nginx.conf.template
 RUN		export DOMAIN_NAME=${DOMAIN_NAME} \
 		&& envsubst '$DOMAIN_NAME' < /tmp/nginx.conf.template > /etc/nginx/conf.d/default.conf \
 		&& rm -rf /tmp/nginx.conf.template
-
-COPY	tools/index.html /var/www/html/index.html
-COPY	tools/favicon.ico /var/www/html/favicon.ico
 
 EXPOSE	443
 

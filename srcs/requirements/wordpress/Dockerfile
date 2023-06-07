@@ -13,6 +13,7 @@ RUN		apt-get update \
 		&& wp core download --version=6.2.2 --path=/var/www/wordpress --allow-root
 
 COPY	tools/setup.sh /tmp/setup.sh
+COPY	assets/favicon.ico /var/www/wordpress/favicon.ico
 
 EXPOSE	9000
 

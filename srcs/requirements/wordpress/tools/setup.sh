@@ -23,6 +23,6 @@ else
 	wp redis enable --path=/var/www/wordpress --allow-root
 	wp plugin update --all --path=/var/www/wordpress --allow-root
 	wp user create $WP_USER $WP_EMAIL --role=author --user_pass=$WP_PWD --path=/var/www/wordpress --allow-root
-	wp theme install twentytwenty --activate --path=/var/www/wordpress --allow-root
+	wp theme install twentysixteen --activate --path=/var/www/wordpress --allow-root
 fi
 php-fpm7.3 -F
