@@ -7,6 +7,7 @@ services:
     restart: always
     depends_on:
       - wordpress
+      - website
     build:
       context: ./requirements/nginx
       dockerfile: Dockerfile
@@ -55,8 +56,6 @@ services:
       - mariadb:/var/lib/mysql
     networks:
       - mynetwork
-    env_file:
-      - .env
   redis:
     container_name: redis
     image: redis:1337
@@ -66,8 +65,19 @@ services:
       dockerfile: Dockerfile
     networks:
       - mynetwork
-    env_file:
-      - .env
+  website:
+    container_name: website
+    image: website:1337
+    restart: always
+    build:
+      context: ./requirements/bonus/website
+      dockerfile: Dockerfile
+    volumes:
+      - website:/var/www/html
+    networks:
+      - mynetwork
+    ports:
+      - 4000:4000
 
 volumes:
   wordpress:
@@ -84,6 +94,13 @@ volumes:
       type: none
       o: bind
       device: ${BASEDIR}/mariadb
+  website:
+    name: website
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${BASEDIR}/website
 
 networks:
   mynetwork:

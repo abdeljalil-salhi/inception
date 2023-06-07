@@ -51,7 +51,7 @@ restart	:
 			@echo $(GREEN)"Containers restarted."$(NC)
 
 mkvol	:
-			@mkdir -p $(BASEDIR)/wordpress $(BASEDIR)/mariadb
+			@mkdir -p $(BASEDIR)/wordpress $(BASEDIR)/mariadb $(BASEDIR)/website
 			@chown -R $(AUTHOR):$(AUTHOR) $(BASEDIR)/*
 			@chown -R $(AUTHOR):$(AUTHOR) $(BASEDIR)/.*
 

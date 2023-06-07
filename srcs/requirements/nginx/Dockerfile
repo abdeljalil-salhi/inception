@@ -9,7 +9,7 @@ RUN		apt-get update \
 		&& ln -sf /dev/stdout /var/log/nginx/access.log \
 		&& ln -sf /dev/stderr /var/log/nginx/error.log \
 		&& rm -rf /etc/nginx.conf.d/default.conf /var/www/html/* \
-		&& mkdir -p /etc/nginx/tls /etc/www/wordpress /var/cache/nginx \
+		&& mkdir -p /etc/nginx/tls /etc/www/wordpress \
 		&& openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
 		-keyout "/etc/nginx/tls/${DOMAIN_NAME}.key" -out "/etc/nginx/tls/${DOMAIN_NAME}.crt" \
 		-subj "/C=MA/ST=Rehamna/L=Benguerir/O=1337 Future Is Loading/OU=${LOGIN}/CN=${DOMAIN_NAME}"
