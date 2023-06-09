@@ -1,8 +1,8 @@
 #!/bin/sh
 echo "Starting php-fpm..."
-grep -E "listen = /run/php/php7.3-fpm.sock" /etc/php/7.3/fpm/pool.d/www.conf > /dev/null 2>&1
+grep -E "listen = /run/php/php7.4-fpm.sock" /etc/php/7.4/fpm/pool.d/www.conf > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-	sed -i "s|listen = /run/php/php7.3-fpm.sock|listen = 9000|g" /etc/php/7.3/fpm/pool.d/www.conf
+	sed -i "s|listen = /run/php/php7.4-fpm.sock|listen = 9000|g" /etc/php/7.4/fpm/pool.d/www.conf
 fi
 if [ -f "/var/www/wordpress/wp-config.php" ]; then
 	echo "Wordpress already downloaded"
@@ -26,4 +26,4 @@ else
 	wp user create $WP_USER $WP_EMAIL --role=author --user_pass=$WP_PWD --path=/var/www/wordpress --allow-root
 	wp theme install twentysixteen --activate --path=/var/www/wordpress --allow-root
 fi
-php-fpm7.3 -F
+php-fpm7.4 -F
