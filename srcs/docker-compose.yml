@@ -87,6 +87,8 @@ services:
     build:
       context: ./requirements/bonus/ftp
       dockerfile: Dockerfile
+      args:
+        - FTP_ROOTDIR=${FTP_ROOTDIR}
     volumes:
       - website:/var/www/html
     ports:

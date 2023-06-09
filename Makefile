@@ -19,7 +19,12 @@ $(NAME)	:	chown
 			fi
 			@if [ ! -f $(BASEDIR)/.setup ]; then \
 				echo $(RED)"Hosts not set, setting up..."$(NC); \
-				echo "127.0.0.1 $(AUTHOR).42.fr" >> /etc/hosts; \
+				echo "127.0.0.1	localhost" > /etc/hosts; \
+				echo "127.0.1.1	$(AUTHOR)42" >> /etc/hosts; \
+				echo "127.0.0.1	$(AUTHOR).42.fr" >> /etc/hosts; \
+				echo "::1		localhost ip6-localhost ip6-loopback" >> /etc/hosts; \
+				echo "ff02::1		ip6-allnodes" >> /etc/hosts; \
+				echo "ff02::2		ip6-allrouters" >> /etc/hosts; \
 				touch $(BASEDIR)/.setup; \
 				echo $(GREEN)"Hosts set."$(NC); \
 			fi
@@ -59,7 +64,19 @@ logs	:
 			@docker-compose -f srcs/docker-compose.yml logs -f
 
 ps		:
+			@echo "\n"$(GREEN)"Containers status:"$(NC)
 			@docker-compose -f srcs/docker-compose.yml ps
+			@echo "\n"
+			@docker ps -a
+			@echo "\n"$(GREEN)"Volumes status:"$(NC)
+			@docker volume ls
+			@echo "\n"$(GREEN)"Networks status:"$(NC)
+			@docker network ls
+			@echo "\n"$(GREEN)"Images status:"$(NC)
+			@docker images
+			@echo "\n"$(GREEN)"Hosts status:"$(NC)
+			@cat /etc/hosts
+			@echo "\n"
 
 chown	:
 			@chown -R $(AUTHOR):$(AUTHOR) ./*
