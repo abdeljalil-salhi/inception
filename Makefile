@@ -76,7 +76,6 @@ ps		:
 			@docker images
 			@echo "\n"$(GREEN)"Hosts status:"$(NC)
 			@cat /etc/hosts
-			@echo "\n"
 
 chown	:
 			@chown -R $(AUTHOR):$(AUTHOR) ./*

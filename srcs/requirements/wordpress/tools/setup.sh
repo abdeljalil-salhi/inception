@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "Starting php-fpm..."
 grep -E "listen = /run/php/php7.3-fpm.sock" /etc/php/7.3/fpm/pool.d/www.conf > /dev/null 2>&1
 if [ $? -eq 0 ]; then
 	sed -i "s|listen = /run/php/php7.3-fpm.sock|listen = 9000|g" /etc/php/7.3/fpm/pool.d/www.conf

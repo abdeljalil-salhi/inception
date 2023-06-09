@@ -91,12 +91,25 @@ services:
         - FTP_ROOTDIR=${FTP_ROOTDIR}
     volumes:
       - website:/var/www/html
-    ports:
-      - "21:21"
     networks:
       - mynetwork
+    ports:
+      - "21:21"
     env_file:
       - .env
+  adminer:
+    container_name: adminer
+    image: adminer:1337
+    restart: always
+    depends_on:
+      - mariadb
+    build:
+      context: ./requirements/bonus/adminer
+      dockerfile: Dockerfile
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - mynetwork
 
 volumes:
   wordpress:
