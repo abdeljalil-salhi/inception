@@ -78,6 +78,23 @@ services:
       - mynetwork
     ports:
       - 4000:4000
+  ftp:
+    container_name: ftp
+    image: ftp:1337
+    restart: always
+    depends_on:
+      - website
+    build:
+      context: ./requirements/bonus/ftp
+      dockerfile: Dockerfile
+    volumes:
+      - website:/var/www/html
+    ports:
+      - "21:21"
+    networks:
+      - mynetwork
+    env_file:
+      - .env
 
 volumes:
   wordpress:
