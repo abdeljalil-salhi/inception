@@ -6,5 +6,6 @@ RUN		apt update -y && apt upgrade -y \
 		&& mkdir /app
 
 COPY	app/* app/
+RUN		pip3 install -r app/requirements.txt
 
-CMD		["pip3", "-r", "requirements.txt", "&&", "python3", "bot.py"]
+CMD		["sh", "-c", "python3 app/bot.py"]

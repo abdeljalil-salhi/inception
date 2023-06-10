@@ -31,6 +31,11 @@ $(NAME)	:	chown
 			@docker-compose -f srcs/docker-compose.yml up --build -d
 			@echo $(GREEN)"Containers built."$(NC)
 
+prod	:	$(NAME)
+			@echo $(GREEN)"Deleting intermediate resources..."$(NC)
+			@docker system prune --force
+			@echo $(GREEN)"Intermediate resources deleted."$(NC)
+
 clean	:
 			@echo $(RED)"Bringing containers down and removing images..."$(NC)
 			@docker-compose -f srcs/docker-compose.yml down -v --rmi all --remove-orphans
@@ -81,4 +86,4 @@ chown	:
 			@chown -R $(AUTHOR):$(AUTHOR) ./*
 			@chown -R $(AUTHOR):$(AUTHOR) ./.*
 
-.PHONY	:	all clean fclean re restart mkvol logs ps chown
+.PHONY	:	all prod clean fclean re restart mkvol logs ps chown
