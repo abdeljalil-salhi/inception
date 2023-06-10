@@ -1,0 +1,3 @@
+app/.gitignore
+app/.env.example
+Dockerfile

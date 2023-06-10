@@ -110,6 +110,13 @@ services:
       - wordpress:/var/www/wordpress
     networks:
       - mynetwork
+  dsbot:
+    container_name: dsbot
+    image: dsbot:1337
+    restart: always
+    build:
+      context: ./requirements/bonus/dsbot
+      dockerfile: Dockerfile
 
 volumes:
   wordpress:
