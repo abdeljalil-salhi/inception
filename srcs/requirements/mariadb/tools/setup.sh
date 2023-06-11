@@ -6,10 +6,11 @@ fi
 if [ ! -d "/var/lib/mysql/mysql" ]; then
 	chown -R mysql:mysql /var/lib/mysql
 	mysql_install_db --basedir=/usr --datadir=/var/lib/mysql --user=mysql --rpm > /dev/null
-	if [ ! -f "/tmp/query.sql" ]; then
+	tfile=`mktemp`
+	if [ ! -f "$tfile" ]; then
 		return 1
 	fi
-	cat << EOF > /tmp/query.sql
+	cat << EOF > $tfile
 USE mysql;
 FLUSH PRIVILEGES;
 DELETE FROM	mysql.user WHERE User='';
@@ -22,7 +23,7 @@ CREATE USER '$MARIADB_USER'@'%' IDENTIFIED by '$MARIADB_PWD';
 GRANT ALL PRIVILEGES ON $MARIADB_DB.* TO '$MARIADB_USER'@'%';
 FLUSH PRIVILEGES;
 EOF
-	mysqld --user=mysql --bootstrap < /tmp/query.sql
-	rm -f /tmp/query.sql
+	/usr/bin/mysqld --user=mysql --bootstrap < $tfile
+	rm -f $tfile
 fi
-exec mysqld --user=mysql --console
+exec /usr/bin/mysqld --user=mysql --console
