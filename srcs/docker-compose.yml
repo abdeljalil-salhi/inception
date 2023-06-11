@@ -47,15 +47,12 @@ services:
     build:
       context: ./requirements/mariadb
       dockerfile: Dockerfile
-      args:
-        - MARIADB_DB=${MARIADB_DB}
-        - MARIADB_USER=${MARIADB_USER}
-        - MARIADB_PWD=${MARIADB_PWD}
-        - MARIADB_ROOT_PWD=${MARIADB_ROOT_PWD}
     volumes:
       - mariadb:/var/lib/mysql
     networks:
       - mynetwork
+    env_file:
+      - .env
   redis:
     container_name: redis
     image: redis:1337

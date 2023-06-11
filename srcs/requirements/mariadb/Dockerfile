@@ -1,20 +1,11 @@
-FROM		debian:buster
+FROM		alpine:3.17
 
-RUN			apt-get update \
-			&& apt install -y mariadb-server \
-			&& rm -rf /var/lib/apt/lists/*
-
-ARG			MARIADB_DB
-ARG			MARIADB_USER
-ARG			MARIADB_PWD
-ARG			MARIADB_ROOT_PWD
+RUN			apk update && apk upgrade \
+			&& apk add --no-cache mariadb mariadb-client
 
 COPY		tools/setup.sh /tmp/setup.sh
-
-RUN			chmod +x /tmp/setup.sh \
-			&& /tmp/setup.sh \
-			&& rm -rf /tmp/setup.sh
+COPY		conf/mariadb.conf /etc/my.cnf.d/mariadb-server.cnf
 
 EXPOSE		3306
 
-ENTRYPOINT	[ "mysqld", "--bind-address=0.0.0.0" ]
+ENTRYPOINT	[ "sh", "/tmp/setup.sh" ]
